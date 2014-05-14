@@ -429,6 +429,9 @@
     _gamestateDialogBox.x = 40.0f;
     _gamestateDialogBox.y = 110.0f;
     [self addChild:_gamestateDialogBox];
+    [_gamestateDialogBox animateTransitionInWithTime:.5 andCompletionBlock:^{
+        self.topBar.text = @"GameState requested";
+    }];
 }
 
 - (void)onFireLeft:(SPEvent *)event
@@ -500,7 +503,9 @@
 
 - (void)dialogBoxWantsToLeave:(ORDialogBox *)dialogBox
 {
-    [self removeChild:dialogBox];
+    [dialogBox animateTransitionOutWithTime:.5 andCompletionBlock:^{
+        self.topBar.text = @"GameState closed";
+    }];
 }
 
 @end

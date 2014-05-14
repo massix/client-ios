@@ -137,7 +137,8 @@
 	DDLogDebug(@"Clicked button: %@", button.name);
 
 	if (_dialogBox) {
-		[self removeChild:_dialogBox];
+		[_dialogBox animateTransitionOutWithTime:.5
+							  andCompletionBlock:^{}];
 		_dialogBox = nil;
 	}
 
@@ -155,18 +156,21 @@
 	else if ([button.name isEqualToString:@"InformationButton"]) {
 		_dialogBox = [[ORDialogBox alloc] initWithHeader:@"About Orwell"
 												 andBody:INFORMATION_BODY];
-		_dialogBox.x = Sparrow.stage.width / 2 - _dialogBox.width / 2;
-		_dialogBox.y = Sparrow.stage.height / 2 - _dialogBox.height / 2;
-		_dialogBox.delegate = self;
 		[self addChild:_dialogBox];
 	}
 	else if ([button.name isEqualToString:@"CreditsButton"]) {
 		_dialogBox = [[ORDialogBox alloc] initWithHeader:@"Credits"
 												 andBody:CREDIS_BODY];
+		[self addChild:_dialogBox];
+	}
+
+	if (_dialogBox) {
 		_dialogBox.x = Sparrow.stage.width / 2 - _dialogBox.width / 2;
 		_dialogBox.y = Sparrow.stage.height / 2 - _dialogBox.height / 2;
 		_dialogBox.delegate = self;
 		[self addChild:_dialogBox];
+		[_dialogBox animateTransitionInWithTime:.5
+							 andCompletionBlock:^{}];
 	}
 }
 
@@ -196,7 +200,7 @@
 
 - (void)dialogBoxWantsToLeave:(ORDialogBox *)dialogBox
 {
-	[self removeChild:dialogBox];
+	[dialogBox animateTransitionOutWithTime:.5 andCompletionBlock:^{}];
 }
 
 - (void)onSceneClosing:(SPEvent *)event

@@ -84,6 +84,7 @@
 					   forType:SP_EVENT_TYPE_TOUCH];
 	}
 
+	self.alpha = 0;
 	return self;
 }
 
@@ -134,6 +135,39 @@
 		if (_delegate)
 			[_delegate dialogBox:self didMoveAtX:touch.globalX andY:touch.globalY];
 	}
+}
+
+- (void)animateTransitionInWithTime:(double)time andCompletionBlock:(void (^)())block
+{
+	SPTween *tween = [SPTween tweenWithTarget:self
+										 time:time
+								   transition:SP_TRANSITION_LINEAR];
+	self.scaleX = 0;
+	self.scaleY = 0;
+	[tween fadeTo:1];
+	[tween scaleTo:1];
+
+	tween.onComplete = ^{
+		block();
+	};
+
+	[Sparrow.juggler addObject:tween];
+}
+
+- (void)animateTransitionOutWithTime:(double)time andCompletionBlock:(void (^)())block
+{
+	SPTween *tween = [SPTween tweenWithTarget:self
+										 time:time
+								   transition:SP_TRANSITION_LINEAR];
+	[tween fadeTo:0];
+	[tween scaleTo:0];
+
+	tween.onComplete = ^{
+		block();
+		[self removeFromParent];
+	};
+
+	[Sparrow.juggler addObject:tween];
 }
 
 @end

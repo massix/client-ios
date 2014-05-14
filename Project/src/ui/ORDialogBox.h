@@ -34,5 +34,7 @@
 @property (weak, nonatomic) id<ORDialogBoxDelegate> delegate;
 
 - (id)initWithHeader:(NSString *)header andBody:(NSString *)body;
+- (void)animateTransitionInWithTime:(double)time andCompletionBlock:(void (^)())block;
+- (void)animateTransitionOutWithTime:(double)time andCompletionBlock:(void (^)())block;
 
 @end
