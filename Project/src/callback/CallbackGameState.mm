@@ -36,7 +36,7 @@
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
 	orwell::messages::GameState gstate;
-	gstate.ParseFromArray([message bytes], [message length]);
+	gstate.ParseFromArray([message bytes], (uint32_t) [message length]);
 
 	DDLogVerbose(@"CallbackGameState in");
 

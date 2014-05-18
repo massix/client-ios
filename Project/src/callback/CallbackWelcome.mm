@@ -45,7 +45,7 @@
 	DDLogDebug(@"CallbackWelcome in");
 
 	orwell::messages::Welcome *message = new orwell::messages::Welcome();
-	message->ParsePartialFromArray([messagePayload bytes], [messagePayload length]);
+	message->ParsePartialFromArray([messagePayload bytes], (uint32_t) [messagePayload length]);
 
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 

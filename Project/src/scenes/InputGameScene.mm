@@ -162,7 +162,7 @@
 
 - (void)replaceObjectsInStage:(UIInterfaceOrientation)forOrientation
 {
-    DDLogVerbose(@"Organizing objects for orientation: %d", [[Sparrow currentController] interfaceOrientation]);
+    DDLogVerbose(@"Organizing objects for orientation: %ld", [[Sparrow currentController] interfaceOrientation]);
 
     [self removeChild:_downButton];
     [self removeChild:_upButton];
