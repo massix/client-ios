@@ -140,6 +140,7 @@
 - (void)startObjects
 {
 	[self.topBar animateBusyIndicatorWithDelay:0.5f];
+	self.topBar.text = @"Broadcasting...";
 
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 		[_communicator retrieveServerFromBroadcast];
@@ -188,11 +189,16 @@
 - (void)communicator:(ORServerCommunicator *)communicator didRetrieveServerFromBroadcast:(BOOL)retrieve withIP:(NSString *)serverIP
 {
 	[self.topBar stopBusyIndicator];
+	__weak ServerConnectionScene *wself = self;
+
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if (retrieve) {
+			wself.topBar.text = @"Broadcast OK";
 			_inputServerInfo.text = serverIP;
 			_inputPlayerName.text = @"Ludmann";
 		}
+		else
+			wself.topBar.text = @"No servers available";
 	});
 }
 
@@ -219,13 +225,18 @@
 - (BOOL)messageReceived:(NSDictionary *)dictionary
 {
 	DDLogInfo(@"Received msg");
+	self.topBar.busyIndicatorVisible = NO;
 	NSString *robotName = [dictionary objectForKey:CB_WELCOME_KEY_ROBOT];
+	NSString *robotId = [dictionary objectForKey:CB_WELCOME_KEY_ID];
+	NSString *videoUrl = [dictionary objectForKey:CB_WELCOME_KEY_VIDEO_ADDRESS];
+	NSNumber *videoPort = [dictionary objectForKey:CB_WELCOME_KEY_VIDEO_PORT];
 
 	if (robotName != nil) {
 		DDLogInfo(@"Robot name: %@", robotName);
-		_inputGameScene = [[InputGameScene alloc] init];
+		_inputGameScene = [[InputGameScene alloc] initWithVideoUrl:videoUrl port:videoPort];
 		_inputGameScene.robotName = robotName;
 		_inputGameScene.playerName = _inputPlayerName.text;
+		_inputGameScene.robotId = robotId;
 		[_inputGameScene placeObjectInStage];
 		[_inputGameScene startObjects];
 		[self willGoBack];
@@ -234,7 +245,7 @@
 		[_inputGameScene animateTransitionWithTime:0.5];
 	}
 	else {
-		DDLogInfo(@"Goodbye received");
+		self.topBar.text = @"An error occured..";
 	}
 	return YES;
 }
@@ -243,12 +254,15 @@
 - (void)onConnectButton:(SPEvent *)event
 {
 	DDLogInfo(@"On connect button");
+	self.topBar.text = @"Trying to connect..";
+	self.topBar.busyIndicatorVisible = YES;
 	ORZMQURL *zmqUrl = [[ORZMQURL alloc] initWithString:_inputServerInfo.text];
 	zmqUrl.protocol = ZMQTCP;
 
 	// Skip connection
 	if ([_inputServerInfo.text isEqualToString:@"skip"]) {
-		_inputGameScene = [[InputGameScene alloc] init];
+		_inputGameScene = [[InputGameScene alloc] initWithVideoUrl:@"http://mail.bluegreendiamond.net:8084/cgi-bin/faststream.jpg?stream=full&fps=24"
+															  port:@(0)];
 		_inputGameScene.robotName = @"Test Robot";
 		_inputGameScene.playerName = @"Ludmann";
 		[_inputGameScene placeObjectInStage];

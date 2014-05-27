@@ -30,7 +30,8 @@
 
 @property (strong, nonatomic) NSString *robotName;
 @property (strong, nonatomic) NSString *playerName;
+@property (strong, nonatomic) NSString *robotId;
 
-- (id)init;
+- (id)initWithVideoUrl:(NSString *)string port:(NSNumber *)port;
 
 @end

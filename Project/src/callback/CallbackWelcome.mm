@@ -57,6 +57,16 @@
 	[dict setObject:[NSNumber numberWithUnsignedInt:message->team()]
 			 forKey:CB_WELCOKE_KEY_TEAM];
 
+	[dict setObject:[NSString stringWithCString:message->id().c_str()
+									   encoding:NSASCIIStringEncoding]
+			 forKey:CB_WELCOME_KEY_ID];
+
+	[dict setObject:@(message->video_address().c_str())
+			 forKey:CB_WELCOME_KEY_VIDEO_ADDRESS];
+
+	[dict setObject:@(message->video_port())
+			 forKey:CB_WELCOME_KEY_VIDEO_PORT];
+
 	if (message->has_game_state()) {
 		orwell::messages::GameState const & gstate = message->game_state();
 		[dict setObject:[NSNumber numberWithBool:gstate.playing()] forKey:CB_WELCOME_KEY_PLAYING];

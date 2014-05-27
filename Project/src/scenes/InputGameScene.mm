@@ -76,7 +76,7 @@
 }
 
 #pragma mark - Init methods
-- (id)init
+- (id)initWithVideoUrl:(NSString *)string port:(NSNumber *)port
 {
 	self = [super init];
 	_left = 0;
@@ -102,7 +102,7 @@
 	_upButton.name = @"up";
 	[_buttonsArray addObject:_upButton];
 
-	_mjpegViewer = [ORCameraViewer cameraViewerFromURL:[NSURL URLWithString:@"http://mail.bluegreendiamond.net:8084/cgi-bin/faststream.jpg?stream=full&fps=24"]];
+	_mjpegViewer = [ORCameraViewer cameraViewerFromURL:[NSURL URLWithString:string]];
 
     // Tell the controller I'm a good guy.
     ORViewController *viewController = (ORViewController *)[Sparrow currentController];
@@ -300,7 +300,7 @@
 
             ORServerMessage *message = [[ORServerMessage alloc] init];
             message.tag = @"Input ";
-            message.receiver = @"TANK_0 ";
+            message.receiver = [NSString stringWithFormat:@"%@ ", _robotId];
             message.payload = [NSData dataWithBytes:input.SerializeAsString().c_str()
                                              length:input.SerializeAsString().length()];
             [_serverCommunicator pushMessage:message];
